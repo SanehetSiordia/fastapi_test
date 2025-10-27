@@ -32,7 +32,7 @@ def get_movies():
 
 #PATH PARAM
 @app.get('/movies/{id}', tags=['Movies'])
-def get_movie(id: int):
+def read_movie(id: int):
     for movie in movies:
         if movie['id']==id:
             return movie
@@ -65,5 +65,32 @@ def create_movie(
         'raiting':raiting,
         'category':category
     })
+    return movies
 
+#PUT METHOD
+@app.put('/movies/{id}', tags=['Movies'])
+def update_movie(
+    id:int,
+    title:str=Body(),
+    overview:str=Body(),
+    year:str=Body(),
+    raiting:float=Body(),
+    category:str=Body()
+    ):
+    for movie in movies:
+        if movie['id']==id:
+            movie['title']=title
+            movie['overview']=overview
+            movie['year']=year
+            movie['raiting']=raiting
+            movie['category']=category
+    return movies
+
+#DELETE METHOD
+@app.delete('/movies/{id}', tags=['Movies'])
+def delete_movie(id:int):
+
+    for movie in movies:
+        if movie['id']==id:
+            movies.remove(movie)
     return movies
