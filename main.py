@@ -13,14 +13,16 @@ movies = [
         "title":"Avatar",
         "overview":"Pitufos Azules Extraterrestres por Christopher Nolan",
         "year":"2009",
-        "raiting":8.5
+        "raiting":8.5,
+        "category":"action"
     },
     {
         "id":2,
         "title":"Pitufos",
         "overview":"Pitufos Azules",
         "year":"1998",
-        "raiting":5.5
+        "raiting":5.5,
+        "category":"family"
     }
 ]
 
@@ -28,10 +30,18 @@ movies = [
 def get_movies():
     return movies
 
-
+#PATH PARAM
 @app.get('/movies/{id}', tags=['Home'])
 def get_movie(id: int):
     for movie in movies:
         if movie['id']==id:
+            return movie
+    return []
+
+#QUERY PARAM
+@app.get('/movies/', tags=['Home'])
+def get_movie_by_category(category: str, year: int):
+    for movie in movies:
+        if movie['category']==category:
             return movie
     return []
