@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Body, Path, Query
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, FileResponse
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import datetime
@@ -51,7 +51,11 @@ class MovieUpdate (BaseModel):
 #Retorno Ejemplo de lista DE OBJETOS TIPO Movie
 movies : List[Movie] = []
 
-@app.get('/movies', tags=['Home'])
+@app.get('/', tags=['Home'])
+def home():
+    return PlainTextResponse(content='Home')
+
+@app.get('/movies', tags=['Movies'])
 def get_movies()->List[Movie]:
     content = [movie.model_dump() for movie in movies]
     return JSONResponse(content=content)
@@ -77,7 +81,8 @@ def get_movie_by_category(category: str = Query(min_length=5, max_length=20))->M
 def create_movie(movie:MovieCreate)->List[Movie]:
     movies.append(movie) #Se registra solo el objeto
     content = [movie.model_dump() for movie in movies]
-    return JSONResponse(content=content)
+    #return JSONResponse(content=content)
+    return RedirectResponse('/movies', status_code=303)
 
 #PUT METHOD
 @app.put('/movies/{id}', tags=['Movies'])
@@ -100,3 +105,8 @@ def delete_movie(id:int)->List[Movie] | dict:
             movies.remove(movie)
     content = [movie.model_dump() for movie in movies]
     return JSONResponse(content=content)
+
+#respuesta con archivo
+@app.get('/get_file')
+def get_file():
+    return FileResponse('file.pdf')
