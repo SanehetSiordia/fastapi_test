@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from src.routers.movie_router import movie_router
+from src.utils.http_error_handler import HTTPErrorHandler
 
 app = FastAPI()
 #Modificacion de openapi FastApi
 app.title ="HolaMundo fastAPI SSM"
 app.version= "0.0.1-SNAPSHOT"
+
+#Importar middleware para manejo de errores
+app.middleware(HTTPErrorHandler)
 
 @app.get('/', tags=['Home'])
 def home():
