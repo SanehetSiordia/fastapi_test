@@ -8,6 +8,7 @@ class HTTPErrorHandler(BaseHTTPMiddleware):
         super().__init__(app)
 
     async def dispatch(self, request:Request, call_next) -> Response | JSONResponse:
+        print('Middleware is running!')
         try:
             return await call_next(request)
         except Exception as e:
