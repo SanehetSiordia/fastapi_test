@@ -10,7 +10,7 @@ movies : List[Movie] = []
 #Routers para llamar los metodos en FASTAPI
 movie_router = APIRouter()
 
-@movie_router.get('/movies', tags=['Movies'],status_code=200)
+@movie_router.get('/', tags=['Movies'],status_code=200)
 def get_movies()->List[Movie]:
     content = [movie.model_dump() for movie in movies]
     return JSONResponse(content=content, status_code=200)
