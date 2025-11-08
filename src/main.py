@@ -6,7 +6,17 @@ from typing import Annotated
 from src.routers.movie_router import movie_router
 from src.utils.http_error_handler import HTTPErrorHandler
 
-app = FastAPI()
+#Dependencia Global como tipo 1 (Método)
+def dependecy1():
+    print("Global Dependency 1")
+
+#Dependencia Global con Parametro GLOBAL
+def dependecy2(param1: int):
+    print("Global Dependency 2")
+
+#aplicacion con dependencias GLOBALES
+app = FastAPI(dependencies=[Depends(dependecy1),Depends(dependecy2)])
+
 #Modificacion de openapi FastApi
 app.title ="HolaMundo fastAPI SSM"
 app.version= "0.0.1-SNAPSHOT"
@@ -53,7 +63,6 @@ def get_customers(commons: dict=Depends(commons_param)):    #dependencia guardad
 @app.get('/employees', tags=['venta'])
 def get_users(commons: CommonDependency=Depends()):    #dependencia declarada con una clase (mismo nombre de variable igualada, se puede eliminar)
     return f"Employee created between {commons.start_date} and {commons.end_date}"
-
 
 #Creacion de las rutas en MAIN
 app.include_router(prefix='/movies', router=movie_router)
