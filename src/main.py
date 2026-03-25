@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, Request, Depends, Form
+from fastapi import FastAPI, Request, Depends, Form, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -66,8 +66,15 @@ def profile(my_user:Annotated[dict,Depends(decode_token)]):
 
 @app.get('/', tags=['Home'])
 def home(request:Request):
-    #Renderizado al iniciar
-    return templates.TemplateResponse('index.html',{'request':request,'message':'Welcome'})
+    
+    response = templates.TemplateResponse(
+        "index.html", 
+        {"request": request, "message": "Welcome"}
+    )
+
+    response.set_cookie(key="username", value="Sinhue", httponly=True,max_age=1800,samesite='lax')
+
+    return response
 
 #Inyeccion de dependencias
 #Tipo 1 con metodo y libreria FastApi - Depends
