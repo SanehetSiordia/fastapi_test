@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, Request, Depends, Form, Response
+from fastapi import FastAPI, Request, Depends, Form, Response, Cookie
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -103,6 +103,10 @@ def get_customers(commons: dict=Depends(commons_param)):    #dependencia guardad
 def get_users(commons: CommonDependency=Depends()):    #dependencia declarada con una clase (mismo nombre de variable igualada, se puede eliminar)
     return f"Employee created between {commons.start_date} and {commons.end_date}"
 
+#Ruta para visualizar Cookies
+@app.get('/dashboard')
+def dashboard(username: str = Cookie()):
+    return username
 
 #Creacion de las rutas en MAIN
 app.include_router(prefix='/movies', router=movie_router)
