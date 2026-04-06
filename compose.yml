@@ -2,7 +2,7 @@ services:
   fastapi:
     image: image-fastapi
     build: .
-    container_name: fastap-application
+    container_name: fastapi-application
 
     #puerto-expuesto-local : puerto-expuesto-contenedor-app
     ports:

@@ -110,3 +110,5 @@ def dashboard(username: str = Cookie()):
 
 #Creacion de las rutas en MAIN
 app.include_router(prefix='/movies', router=movie_router)
+
+#PRUEBA EN CONTENEDOR EJECUTADO
