@@ -1,13 +1,48 @@
 services: 
   fastapi:
+    build:
+      context: .
+      target: ${STAGE}
+      dockerfile: Dockerfile
     image: image-fastapi
-    build: .
     container_name: fastapi-application
+    restart: always
+
+    depends_on:
+      db:
+        condition: service_healthy
 
     #puerto-expuesto-local : puerto-expuesto-contenedor-app
     ports:
-      - '8085:8000'
+      - '${PORT_LOCAL}:${PORT_REMOTE}'
     
     #Sincronizacion del código local con el contenedor
     volumes:
-     - .:/app
+     - .:/app/
+
+    #SINCRONIZACION LIMPIA CON EL ARCHIVO .ENV
+    env_file:
+      - .env
+
+  db:
+    image: postgres:15-alpine
+    container_name: ${DB_NAME}
+    restart: always
+    environment:
+      # Postgres reconoce estas variables para autoconfigurarse
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - posgrest-data:/var/lib/postgresql/data
+
+volumes:
+  posgrest-data:
+    external: false

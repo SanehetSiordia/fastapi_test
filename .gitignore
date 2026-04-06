@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+postgres/
 
 # Environments
 .env
@@ -11,8 +12,8 @@ env.bak/
 venv.bak/
 
 #SettingsJson
-**/.vscode/settings.json
-
+**/.vscode/*
+!.vscode/settings.json
 
 # Ignore log files
 *.log
