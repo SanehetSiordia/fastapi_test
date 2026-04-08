@@ -9,6 +9,14 @@ from src.routers.movie_router import movie_router
 from src.utils.http_error_handler import HTTPErrorHandler
 from jose import jwt
 
+#conexion a DB Postgres
+from src.models.items import Item
+from sqlmodel import SQLModel
+from src.config.database import engine
+from src import models
+
+SQLModel.metadata.create_all(engine)
+
 app = FastAPI()
 #Modificacion de openapi FastApi
 app.title ="HolaMundo fastAPI SSM"

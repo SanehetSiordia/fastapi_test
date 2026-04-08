@@ -6,7 +6,7 @@ python-multipart==0.0.24
 
 # Base de datos y ORM
 sqlmodel==0.0.38
-psycopg2-binary==2.9.11
+psycopg[binary]==3.3.3
 
 # Seguridad y Tokens
 python-jose==3.5.0
