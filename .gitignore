@@ -13,7 +13,6 @@ venv.bak/
 
 #SettingsJson
 **/.vscode/*
-!.vscode/settings.json
 
 # Ignore log files
 *.log
