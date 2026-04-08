@@ -10,10 +10,11 @@ from src.utils.http_error_handler import HTTPErrorHandler
 from jose import jwt
 
 #conexion a DB Postgres
+from src import models
 from src.models.items import Item
+from src.routers.item_router import items_router
 from sqlmodel import SQLModel
 from src.config.database import engine
-from src import models
 
 SQLModel.metadata.create_all(engine)
 
@@ -27,6 +28,9 @@ oauth2_schema = OAuth2PasswordBearer(tokenUrl="token")
 
 #Importar middleware para manejo de errores con Starlette
 app.middleware(HTTPErrorHandler) 
+
+#Agregar routers de metodos SQL
+app.include_router(items_router)
 
 #Rutas para estilos y templates de plantillas html
 static_path = os.path.join(os.path.dirname(__file__), 'static/')
@@ -72,17 +76,9 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 def profile(my_user:Annotated[dict,Depends(decode_token)]):
     return my_user
 
-@app.get('/', tags=['Home'])
-def home(request:Request):
-    
-    response = templates.TemplateResponse(
-        "index.html", 
-        {"request": request, "message": "Welcome"}
-    )
-
-    response.set_cookie(key="username", value="Sinhue", httponly=True,max_age=1800,samesite='lax')
-
-    return response
+@app.get('/')
+def home():
+    return "Hola"
 
 #Inyeccion de dependencias
 #Tipo 1 con metodo y libreria FastApi - Depends

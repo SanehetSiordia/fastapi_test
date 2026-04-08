@@ -1,4 +1,5 @@
 from sqlmodel import SQLModel, Field
+from typing import Optional
 
 class ItemBase(SQLModel):
     name: str=Field()
@@ -12,4 +13,4 @@ class itemCreateOut(SQLModel):
     id: int=Field()
 
 class Item(ItemBase, table=True):
-    id: int=Field(primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True)
