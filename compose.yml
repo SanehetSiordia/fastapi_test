@@ -1,0 +1,55 @@
+services: 
+  fastapi:
+    env_file:
+      - .env
+
+    build:
+      context: .
+      target: ${STAGE}
+      dockerfile: Dockerfile
+
+    image: ${IMAGE_NAME}:${IMAGE_VERSION}
+    container_name: ${DOCKER_NAME}
+    restart: always
+
+    depends_on:
+      postgresDB:
+        condition: service_healthy
+
+    #puerto-expuesto-local : puerto-expuesto-contenedor-app
+    ports:
+      - '${PORT_LOCAL}:${PORT_REMOTE}'    
+    volumes:
+     - .:/app/    
+    networks:
+      - ${APP_NETWORK_NAME}
+
+  postgresDB:
+    image: postgres:15-alpine
+    container_name: ${POSTGRES_DB}
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ${APP_VOLUME_NAME}:/var/lib/postgresql/data
+    networks:
+      - ${APP_NETWORK_NAME}
+
+volumes:
+  postgres_fastapi_volume:
+    name: ${APP_VOLUME_NAME}
+    external: false
+
+networks:
+  postgres_fastapi_network:
+    name: ${APP_NETWORK_NAME}
+    driver: bridge
