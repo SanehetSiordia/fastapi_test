@@ -1,11 +1,15 @@
 services: 
   fastapi:
+    env_file:
+      - .env
+
     build:
       context: .
       target: ${STAGE}
       dockerfile: Dockerfile
-    image: image-fastapi
-    container_name: fastapi-application
+
+    image: ${IMAGE_NAME}:${IMAGE_VERSION}
+    container_name: ${DOCKER_NAME}
     restart: always
 
     depends_on:
@@ -14,15 +18,11 @@ services:
 
     #puerto-expuesto-local : puerto-expuesto-contenedor-app
     ports:
-      - '${PORT_LOCAL}:${PORT_REMOTE}'
-    
-    #Sincronizacion del código local con el contenedor
+      - '${PORT_LOCAL}:${PORT_REMOTE}'    
     volumes:
-     - .:/app/
-
-    #SINCRONIZACION LIMPIA CON EL ARCHIVO .ENV
-    env_file:
-      - .env
+     - .:/app/    
+    networks:
+      - ${APP_NETWORK_NAME}
 
   postgresDB:
     image: postgres:15-alpine
@@ -40,8 +40,16 @@ services:
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
-      - posgrest-data:/var/lib/postgresql/data
+      - ${APP_VOLUME_NAME}:/var/lib/postgresql/data
+    networks:
+      - ${APP_NETWORK_NAME}
 
 volumes:
-  posgrest-data:
+  postgres_fastapi_volume:
+    name: ${APP_VOLUME_NAME}
     external: false
+
+networks:
+  postgres_fastapi_network:
+    name: ${APP_NETWORK_NAME}
+    driver: bridge
